@@ -1,6 +1,7 @@
 package ui.login
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,9 +10,14 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.messenger.R
+import com.example.messenger.messenger.data.local.AppPreferences
+import com.example.messenger.messenger.main.MainActivity
+import com.example.messenger.messenger.signup.SignUpActivity
 
 class LoginActivity : AppCompatActivity() , LoginView, View.OnClickListener{
 
+    private lateinit var presenter: LoginPresenter
+    private lateinit var preferences: AppPreferences
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
@@ -23,6 +29,9 @@ class LoginActivity : AppCompatActivity() , LoginView, View.OnClickListener{
         setContentView(R.layout.activity_login)
         bindViews()
     }
+
+
+
 
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
@@ -41,13 +50,23 @@ class LoginActivity : AppCompatActivity() , LoginView, View.OnClickListener{
     }
 
     override fun navigateToSignUp() {
-        TODO("Not yet implemented")
+        startActivity(Intent(this, SignUpActivity::class.java))
     }
-
     override fun navigateToHome() {
-        TODO("Not yet implemented")
+        finish()
+        startActivity(Intent(this, MainActivity::class.java))
     }
+    override fun onClick(view: View) {
+        if (view.id == R.id.btn_login) {
+            presenter.executeLogin(
+                etUsername.text.toString(),
+                etPassword.text.toString()
+            )
+        } else if (view.id == R.id.btn_sign_up) {
+            navigateToSignUp()
+        }
 
+    }
     override fun showAuthError() {
         Toast.makeText(this, "Invalid username and password combination.", Toast.LENGTH_SHORT)
     }
@@ -66,7 +85,6 @@ class LoginActivity : AppCompatActivity() , LoginView, View.OnClickListener{
          return this;
     }
 
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
-    }
+
+
 }
